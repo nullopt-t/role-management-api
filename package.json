@@ -1,0 +1,20 @@
+{
+  "name": "role-management-api",
+  "version": "1.0.0",
+  "description": "Role based system for manage users and their roles and permissions",
+  "homepage": "https://github.com/nullopt-t/role-management-api#readme",
+  "bugs": {
+    "url": "https://github.com/nullopt-t/role-management-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nullopt-t/role-management-api.git"
+  },
+  "license": "MIT",
+  "author": "AmrMohamed",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest"
+  }
+}
