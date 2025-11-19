@@ -1,5 +1,5 @@
 var Logger = require('./src/utilities/logger.utility.js');
-var errorHandlerMiddleware = require('./src/middleware/error-handler.middleware.js');
+var errorHandlerMiddleware = require('./src/middlewares/error-handler.middleware.js');
 var path = require('path');
 var ejs = require('ejs');
 var express = require('express');
