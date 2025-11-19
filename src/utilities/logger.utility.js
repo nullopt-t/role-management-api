@@ -76,8 +76,7 @@ class Logger {
 		const { timestamp, level, message, stack, ...meta } = info;
 
 		// safer readable message
-		const msg = typesUtility.isObject(message)
-			? JSON.stringify(message, null, 2)
+		const msg = typesUtility.isObject(message) ? JSON.stringify(message, null, 2)
 			: message;
 
 		let output = `[${timestamp}] ${level}: ${msg}`;
