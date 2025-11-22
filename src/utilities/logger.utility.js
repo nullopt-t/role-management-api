@@ -1,7 +1,7 @@
-const winston = require('winston');
-const path = require('path');
-const fs = require('fs');
-const typesUtility = require('./types.utility');
+var winston = require('winston');
+var path = require('path');
+var fs = require('fs');
+var typesUtility = require('./types.utility');
 require('winston-daily-rotate-file');
 
 class Logger {

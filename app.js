@@ -6,13 +6,13 @@ var ApiError = require('./src/utilities/api-error.utility.js');
 var app = express();
 
 app.get('/', function getHome(req, res) {
-	res.status(200).render('index');
+	res.status(200).end();
 });
 
 app.use(errorHandlerMiddleware);
 
 app.use((req, res) => {
-	res.status(404).send();
+	res.status(404).end();
 });
 
 module.exports = app;
