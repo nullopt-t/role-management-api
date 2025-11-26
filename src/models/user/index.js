@@ -1,20 +1,24 @@
-var { Schema } = require('mongoose');
+var { Schema, model, Types } = require('mongoose');
 
-const UserSchema = new Schema({
-	username: {
-		type: String,
-		required: true,
-		match: [/^[a-zA-Z0-9_]+$/, 'invalid username format'],
+const UserSchema = new Schema(
+	{
+		username: {
+			type: String,
+			required: true,
+			match: [/^[a-zA-Z0-9_]+$/, 'invalid username format'],
+		},
+		email: {
+			type: String,
+			required: true,
+			match: [/^[\w.-]+@[\w.-]+\.\w+$/, 'invalid email format'],
+		},
+		password: {
+			type: String,
+			required: true,
+		},
+		roles: [{ type: Types.ObjectId, ref: 'Role' }],
 	},
-	email: {
-		type: String,
-		required: true,
-		match: [/^[\w.-]+@[\w.-]+\.\w+$/, 'invalid email format'],
-	},
-	password: {
-		type: String,
-		required: true,
-	},
-});
+	{ timestamps: true }
+);
 
-module.exports = UserSchema;
+module.exports = model('User', UserSchema);
