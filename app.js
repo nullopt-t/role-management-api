@@ -1,9 +1,12 @@
-var Logger = require('./src/utilities/logger.utility.js');
-var errorHandlerMiddleware = require('./src/middlewares/error-handler.middleware.js');
 var path = require('path');
 var express = require('express');
+var errorHandlerMiddleware = require('./src/middlewares/error-handler.middleware.js');
 var ApiError = require('./src/utilities/api-error.utility.js');
+var Logger = require('./src/utilities/logger.utility.js');
+var routes = require('./src/routes');
 var app = express();
+
+app.use('/users', routes.userRouter);
 
 app.get('/', function getHome(req, res) {
 	res.status(200).end();
