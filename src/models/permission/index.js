@@ -1,4 +1,5 @@
-var { Schema, model } = require('mongoose');
+var { Schema } = require('mongoose');
+var con = require('../../configs/mongoose');
 
 const PermissionSchema = new Schema(
 	{
@@ -9,4 +10,4 @@ const PermissionSchema = new Schema(
 	{ timestamps: true }
 );
 
-module.exports = model('Permission', PermissionSchema);
+module.exports = con.model('Permission', PermissionSchema);

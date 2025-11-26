@@ -1,4 +1,5 @@
-var { Types, Schema ,model} = require('mongoose');
+var { Types, Schema } = require('mongoose');
+var con = require('../../configs/mongoose');
 
 const RoleSchema = new Schema(
 	{
@@ -9,4 +10,4 @@ const RoleSchema = new Schema(
 	{ timestamps: true }
 );
 
-module.exports = model('Role', RoleSchema);
+module.exports = con.model('Role', RoleSchema);

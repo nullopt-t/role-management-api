@@ -1,8 +1,7 @@
-const router = require('express').Router();
+var router = require('express').Router();
+var { getAll } = require('../../controllers/users');
 
-router.get('/', (req, res) => {
-	res.send('adminGetAllUsers');
-});
+router.get('/', getAll);
 
 router.get('/:id', (req, res) => {
 	res.send('adminGetUserByID');

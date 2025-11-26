@@ -1,4 +1,5 @@
-var { Schema, model, Types } = require('mongoose');
+var { Schema, Types } = require('mongoose');
+var con = require('../../configs/mongoose');
 
 const UserSchema = new Schema(
 	{
@@ -21,4 +22,4 @@ const UserSchema = new Schema(
 	{ timestamps: true }
 );
 
-module.exports = model('User', UserSchema);
+module.exports = con.model('User', UserSchema);
