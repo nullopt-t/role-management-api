@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
 
-const con = mongoose.createConnection(process.env.MONGO_URI, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
+const con = mongoose.createConnection(process.env.MONGO_URI);
 
 con.on('connected', () =>
 	console.log('MongoDB connected via createConnection')

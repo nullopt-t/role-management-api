@@ -13,4 +13,16 @@ module.exports = {
 			})
 			.lean();
 	},
+	findById(id) {
+		return User.findById(id)
+			.skip(offset)
+			.limit(limit)
+			.populate({
+				path: 'Role',
+				populate: {
+					path: 'Permission',
+				},
+			})
+			.lean();
+	},
 };

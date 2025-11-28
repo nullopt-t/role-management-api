@@ -1,11 +1,9 @@
 var router = require('express').Router();
-var { getAll } = require('../../controllers/users');
+var { getAll, getByID } = require('../../controllers/users');
 
 router.get('/', getAll);
 
-router.get('/:id', (req, res) => {
-	res.send('adminGetUserByID');
-});
+router.get('/:id', getByID);
 
 router.post('/', (req, res) => {
 	res.send('adminCreateUser');

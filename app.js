@@ -9,8 +9,8 @@ var app = express();
 
 app.use(morgan('dev'));
 
-app.use('/users', routes.usersRouter);
-app.use('/roles', routes.rolesRouter);
+app.use(routes.usersRouter);
+app.use(routes.rolesRouter);
 
 app.get('/', function getHome(req, res) {
 	res.status(200).end();
