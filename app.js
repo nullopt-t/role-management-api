@@ -7,6 +7,8 @@ var Logger = require('./src/utilities/logger.utility.js');
 var routes = require('./src/routes');
 var app = express();
 
+app.use(express.json());
+
 app.use(morgan('dev'));
 
 app.use(routes.usersRouter);

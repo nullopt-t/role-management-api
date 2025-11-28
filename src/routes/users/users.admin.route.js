@@ -1,21 +1,18 @@
 var router = require('express').Router();
-var { getAll, getByID } = require('../../controllers/users');
+var {
+	getAllUsers,
+	getUserByID,
+	createUser,
+	updateUser,
+} = require('../../controllers/users');
 
-router.get('/', getAll);
+router.get('/', getAllUsers);
 
-router.get('/:id', getByID);
+router.get('/:id', getUserByID);
 
-router.post('/', (req, res) => {
-	res.send('adminCreateUser');
-});
+router.post('/', createUser);
 
-router.put('/:id', (req, res) => {
-	res.send('adminReplaceUser');
-});
-
-router.patch('/:id', (req, res) => {
-	res.send('adminUpdateUser');
-});
+router.patch('/:id', updateUser);
 
 router.delete('/:id', (req, res) => {
 	res.send('adminDeleteUser');

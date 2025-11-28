@@ -1,5 +1,6 @@
 var { User } = require('../../models');
-
+var user = require('../../models/user');
+var { Types } = require('mongoose');
 module.exports = {
 	findAll(offset, limit) {
 		return User.find({})
@@ -24,5 +25,14 @@ module.exports = {
 				},
 			})
 			.lean();
+	},
+	create(data) {
+		return User.create(data);
+	},
+	update(id, data) {
+		return User.findOneAndUpdate(new Types.ObjectId(id), data, { new: true });
+	},
+	exists(id) {
+		return User.exists(new Types.ObjectId(id));
 	},
 };
