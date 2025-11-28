@@ -1,6 +1,6 @@
 var { User } = require('../../models');
-var user = require('../../models/user');
 var { Types } = require('mongoose');
+
 module.exports = {
 	findAll(offset, limit) {
 		return User.find({})
@@ -16,8 +16,6 @@ module.exports = {
 	},
 	findById(id) {
 		return User.findById(id)
-			.skip(offset)
-			.limit(limit)
 			.populate({
 				path: 'Role',
 				populate: {

@@ -7,7 +7,6 @@ var {
 	updateBodySchema,
 } = require('../../controllers/users/validator');
 var { hashPassword } = require('../../utilities/password.utility');
-var Logger = require('../../utilities/logger.utility');
 
 module.exports = {
 	async getAllUsers(req, res) {

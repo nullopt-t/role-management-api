@@ -1,6 +1,6 @@
 var router = require('express').Router();
 
-router.get('/me', function (req, res, next) {
+router.get('/me', function (req, res) {
 	res.send(`${req.method};${req.path}`);
 });
 
