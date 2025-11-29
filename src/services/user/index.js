@@ -1,12 +1,33 @@
-var Logger = require('../../utilities/logger.utility');
 var UserRepository = require('../../repositories/users');
 
 module.exports = {
-	getUsers(offset, limit) {
-		return UserRepository.findAll(offset, limit);
+	async getUsers(offset, limit) {
+		const users = await UserRepository.findAll(offset, limit);
+		return users.map((user) => {
+			return {
+				id: user._id,
+				username: user.username,
+				email: user.email,
+				emailVerified: user.emailVerified,
+				roles: user.roles,
+				createdAt: user.createdAt,
+				updatedAt: user.updatedAt,
+			};
+		});
 	},
-	getUserByID(id) {
-		return UserRepository.findById(id);
+	async getUserByID(id) {
+		const user = await UserRepository.findById(id);
+		return user
+			? {
+					id: user._id,
+					username: user.username,
+					email: user.email,
+					emailVerified: user.emailVerified,
+					roles: user.roles,
+					createdAt: user.createdAt,
+					updatedAt: user.updatedAt,
+			  }
+			: null;
 	},
 	async createUser(data) {
 		const newUser = await UserRepository.create(data);
@@ -15,7 +36,7 @@ module.exports = {
 			username: newUser.username,
 			email: newUser.email,
 			emailVerified: newUser.emailVerified,
-			role: newUser.roles,
+			roles: newUser.roles,
 			createdAt: newUser.createdAt,
 			updatedAt: newUser.updatedAt,
 		};
@@ -27,7 +48,7 @@ module.exports = {
 			username: updatedUser.username,
 			email: updatedUser.email,
 			emailVerified: updatedUser.emailVerified,
-			role: updatedUser.roles,
+			roles: updatedUser.roles,
 			createdAt: updatedUser.createdAt,
 			updatedAt: updatedUser.updatedAt,
 		};

@@ -1,12 +1,12 @@
 var router = require('express').Router();
 var {
-	getAllUsers,
+	getUsers,
 	getUserByID,
 	createUser,
 	updateUser,
 } = require('../../controllers/users');
 
-router.get('/', getAllUsers);
+router.get('/', getUsers);
 
 router.get('/:id', getUserByID);
 

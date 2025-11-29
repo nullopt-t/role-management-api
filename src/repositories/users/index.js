@@ -11,6 +11,7 @@ module.exports = {
 				populate: {
 					path: 'Permission',
 				},
+				strictPopulate: false,
 			})
 			.lean();
 	},
@@ -21,6 +22,7 @@ module.exports = {
 				populate: {
 					path: 'Permission',
 				},
+				strictPopulate: false,
 			})
 			.lean();
 	},

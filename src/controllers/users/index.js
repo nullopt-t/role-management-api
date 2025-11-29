@@ -9,7 +9,7 @@ var {
 var { hashPassword } = require('../../utilities/password.utility');
 
 module.exports = {
-	async getAllUsers(req, res) {
+	async getUsers(req, res, next) {
 		try {
 			const { offset, limit } = getAllQuerySchema.parse(req.query);
 			const data = await UserService.getUsers(offset, limit);
