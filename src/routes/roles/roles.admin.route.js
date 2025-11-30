@@ -1,16 +1,11 @@
 var router = require('express').Router();
+var { getRoles, getRoleByID, createRole } = require('../../controllers/roles');
 
-router.get('/', (req, res) => {
-	res.send('getRoles');
-});
+router.get('/', getRoles);
 
-router.get('/:id', (req, res) => {
-	res.send('getRoleByID');
-});
+router.get('/:id', getRoleByID);
 
-router.post('/', (req, res) => {
-	res.send('postRole');
-});
+router.post('/', createRole);
 
 router.delete('/:id', (req, res) => {
 	res.send('deleteRole');

@@ -20,7 +20,14 @@ module.exports = {
 				emailVerified,
 			});
 
-			res.json({ data });
+			res.json({
+				page: data.page,
+				pageSize: data.pageSize,
+				total: data.total,
+				totalPages: data.totalPages,
+				data: data.items,
+			});
+			
 		} catch (err) {
 			next(err);
 		}
