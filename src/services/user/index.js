@@ -3,7 +3,6 @@ var UserRepository = require('../../repositories/users');
 module.exports = {
 	async getUsers(page, pageSize, filters) {
 		const result = await UserRepository.findAll(page, pageSize, filters);
-
 		return {
 			...result,
 			items: result.items.map((u) => ({

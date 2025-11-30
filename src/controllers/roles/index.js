@@ -27,7 +27,7 @@ module.exports = {
 	async createRole(req, res, next) {
 		try {
 			const { name, description, permissions } = createRoleSchema.parse(
-				req.params
+				req.body
 			);
 			const role = await RoleService.createRole({
 				name,

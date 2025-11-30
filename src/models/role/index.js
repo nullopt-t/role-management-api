@@ -5,7 +5,13 @@ const RoleSchema = new Schema(
 	{
 		name: { type: String, required: true },
 		description: { type: String, required: true },
-		permissions: [{ type: Types.ObjectId, ref: 'Permission' }],
+		permissions: [
+			{
+				type: Types.ObjectId,
+				ref: 'Permission',
+				set: (v) => (typeof v === 'string' ? new Types.ObjectId(v) : v),
+			},
+		],
 	},
 	{ timestamps: true }
 );

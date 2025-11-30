@@ -17,7 +17,13 @@ const UserSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		roles: [{ type: Types.ObjectId, ref: 'Role' }],
+		roles: [
+			{
+				type: Types.ObjectId,
+				ref: 'Role',
+				set: (v) => (typeof v === 'string' ? new Types.ObjectId(v) : v),
+			},
+		],
 	},
 	{ timestamps: true }
 );
