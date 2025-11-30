@@ -11,11 +11,16 @@ var { hashPassword } = require('../../utilities/password.utility');
 module.exports = {
 	async getUsers(req, res, next) {
 		try {
-			const { offset, limit } = getAllQuerySchema.parse(req.query);
-			const data = await UserService.getUsers(offset, limit);
-			res.json({
-				data,
+			const { page, pageSize, search, role, emailVerified } =
+				getAllQuerySchema.parse(req.query);
+
+			const data = await UserService.getUsers(page, pageSize, {
+				search,
+				role,
+				emailVerified,
 			});
+
+			res.json({ data });
 		} catch (err) {
 			next(err);
 		}

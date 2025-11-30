@@ -1,19 +1,21 @@
 var UserRepository = require('../../repositories/users');
 
 module.exports = {
-	async getUsers(offset, limit) {
-		const users = await UserRepository.findAll(offset, limit);
-		return users.map((user) => {
-			return {
-				id: user._id,
-				username: user.username,
-				email: user.email,
-				emailVerified: user.emailVerified,
-				roles: user.roles,
-				createdAt: user.createdAt,
-				updatedAt: user.updatedAt,
-			};
-		});
+	async getUsers(page, pageSize, filters) {
+		const result = await UserRepository.findAll(page, pageSize, filters);
+
+		return {
+			...result,
+			items: result.items.map((u) => ({
+				id: u._id,
+				username: u.username,
+				email: u.email,
+				emailVerified: u.emailVerified,
+				roles: u.roles,
+				createdAt: u.createdAt,
+				updatedAt: u.updatedAt,
+			})),
+		};
 	},
 	async getUserByID(id) {
 		const user = await UserRepository.findById(id);
@@ -51,6 +53,18 @@ module.exports = {
 			roles: updatedUser.roles,
 			createdAt: updatedUser.createdAt,
 			updatedAt: updatedUser.updatedAt,
+		};
+	},
+	async deleteUser(id) {
+		const deletedUser = await UserRepository.delete(id);
+		return {
+			id: deletedUser._id,
+			username: deletedUser.username,
+			email: deletedUser.email,
+			emailVerified: deletedUser.emailVerified,
+			roles: deletedUser.roles,
+			createdAt: deletedUser.createdAt,
+			updatedAt: deletedUser.updatedAt,
 		};
 	},
 	exists(id) {
