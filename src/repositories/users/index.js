@@ -22,7 +22,7 @@ module.exports = {
 					totalPages: 0,
 				};
 			}
-			filter.roles = { $in: [r._id.toString()] };
+			filter.roles = { $in: [r.id] };
 		}
 		if (typeof emailVerified === 'boolean') {
 			filter.emailVerified = emailVerified;

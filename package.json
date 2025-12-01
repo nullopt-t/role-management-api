@@ -29,6 +29,8 @@
     "mongoose": "^8.19.3",
     "morgan": "^1.10.1",
     "needle": "^3.3.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "useragent": "^2.3.0",
     "winston": "^3.18.3",
     "winston-daily-rotate-file": "^5.0.0",
@@ -38,6 +40,9 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "eslint": "^9.39.1",
-    "globals": "^16.5.0"
+    "globals": "^16.5.0",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.1.4"
   }
 }

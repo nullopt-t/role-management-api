@@ -10,10 +10,28 @@ module.exports = {
 	create(data) {
 		return Role.create(data);
 	},
+	async addPermissions(id, permissions) {
+		return Role.findByIdAndUpdate(
+			id,
+			{ $addToSet: { permissions: { $each: permissions } } },
+			{ new: true }
+		)
+			.populate('permissions')
+			.lean();
+	},
+	async removePermissions(id, permissions) {
+		return Role.findByIdAndUpdate(
+			id,
+			{ $pull: { permissions: { $in: permissions } } },
+			{ new: true }
+		)
+			.populate('permissions')
+			.lean();
+	},
 	update(id, data) {
 		return Role.findByIdAndUpdate(id, data, { new: true })
-				.populate('permissions')
-				.lean();
+			.populate('permissions')
+			.lean();
 	},
 	delete(id) {
 		return Role.findByIdAndDelete(id);

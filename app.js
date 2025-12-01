@@ -1,11 +1,13 @@
 var morgan = require('morgan');
 var express = require('express');
 var errorHandlerMiddleware = require('./src/middlewares/error-handler.middleware.js');
+var setupSwagger = require('./src/configs/swagger');
 var routes = require('./src/routes');
 var app = express();
 
 app.use(morgan('dev'));
 app.use(express.json());
+setupSwagger(app);
 
 app.use(routes.usersRouter);
 app.use(routes.rolesRouter);
