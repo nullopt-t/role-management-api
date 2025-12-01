@@ -3,7 +3,7 @@ var con = require('../../configs/mongoose');
 
 const RoleSchema = new Schema(
 	{
-		name: { type: String, required: true },
+		name: { type: String, required: true, unique: true },
 		description: { type: String, required: true },
 		permissions: [
 			{

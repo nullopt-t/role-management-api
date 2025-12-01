@@ -45,7 +45,7 @@ module.exports = function (err, req, res, next) {
 		path: req.originalUrl,
 		method: req.method,
 		client,
-		// stack: err.stack,
+		stack: err.stack,
 	});
 
 	return res.status(statusCode).json(responseBody);

@@ -11,7 +11,9 @@ module.exports = {
 		return Role.create(data);
 	},
 	update(id, data) {
-		return Role.findByIdAndUpdate(id, data, { new: true });
+		return Role.findByIdAndUpdate(id, data, { new: true })
+				.populate('permissions')
+				.lean();
 	},
 	delete(id) {
 		return Role.findByIdAndDelete(id);

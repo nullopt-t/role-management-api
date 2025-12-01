@@ -1,7 +1,9 @@
 var RoleService = require('../../services/role');
 var { 
 	createRoleSchema,
-	getRoleByIDSchema 
+	getRoleByIDSchema,
+	updateRoleByIDParameterSchema,
+	updateRoleByIDBodySchema,
 } = require('./validator');
 
 module.exports = {
@@ -54,4 +56,17 @@ module.exports = {
 			next(error);
 		}
 	},
+	async updateRole(req, res, next){
+		try {
+			const { id } = updateRoleByIDParameterSchema.parse(req.params);
+			const newFields = updateRoleByIDBodySchema.parse(req.body);
+			const updatedRole = await RoleService.updateRole(id, newFields);
+			res.json({
+				success: true,
+				data: updatedRole
+			})
+		} catch(error){
+			next(error);
+		}
+	}
 };

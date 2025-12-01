@@ -1,5 +1,5 @@
 var router = require('express').Router();
-var { getRoles, getRoleByID, createRole } = require('../../controllers/roles');
+var { getRoles, getRoleByID, createRole , updateRole } = require('../../controllers/roles');
 
 router.get('/', getRoles);
 
@@ -11,8 +11,6 @@ router.delete('/:id', (req, res) => {
 	res.send('deleteRole');
 });
 
-router.patch('/:id', (req, res) => {
-	res.send('patchRole');
-});
+router.patch('/:id', updateRole);
 
 module.exports = router;
