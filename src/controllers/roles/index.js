@@ -1,5 +1,8 @@
 var RoleService = require('../../services/role');
-var { createRoleSchema } = require('./validator');
+var { 
+	createRoleSchema,
+	getRoleByIDSchema 
+} = require('./validator');
 
 module.exports = {
 	async getRoles(req, res, next) {
@@ -15,7 +18,16 @@ module.exports = {
 	},
 	async getRoleByID(req, res, next) {
 		try {
-			const role = await RoleService.getRoleByID(req.params.id);
+			const { id } = getRoleByIDSchema.parse(req.params);
+
+			const role = await RoleService.getRoleByID(id);
+			if(!role){
+				return res.status(404).json({
+					success: false,
+					message: 'Not Found'
+				});
+			}
+
 			res.json({
 				success: true,
 				data: role,
