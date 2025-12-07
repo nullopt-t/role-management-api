@@ -1,5 +1,6 @@
 module.exports = {
-	usersRouter: require('./users'),
-	rolesRouter: require('./roles'),
-	permissionsRouter: require('./permissions'),
+	adminUsersRouter: require('./admin/users'),
+	adminRolesRouter: require('./admin/roles'),
+	adminPermissionsRouter: require('./admin/permissions'),
+	publicRouter: require('./public'),
 };

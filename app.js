@@ -1,17 +1,21 @@
 var morgan = require('morgan');
 var express = require('express');
-var errorHandlerMiddleware = require('./src/middlewares/error-handler.middleware.js');
-var setupSwagger = require('./src/configs/swagger');
 var routes = require('./src/routes');
-var app = express();
+var errorHandlerMiddleware = require('./src/middlewares/error-handler.middleware.js');
+var { setupSwagger, config } = require('./src/configs');
 
-app.use(morgan('dev'));
+const app = express();
+
+app.use(morgan(config.logging.morganFormat));
 app.use(express.json());
-setupSwagger(app);
 
-app.use(routes.usersRouter);
-app.use(routes.rolesRouter);
-app.use(routes.permissionsRouter);
+// Setup Swagger documentation
+setupSwagger(app, config.api);
+
+app.use('/api/admin', routes.adminUsersRouter);
+app.use('/api/admin', routes.adminRolesRouter);
+app.use('/api/admin', routes.adminPermissionsRouter);
+app.use('/api/', routes.publicRouter);
 
 app.get('/', function getHome(req, res) {
 	res.status(200).end();

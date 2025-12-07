@@ -1,5 +1,6 @@
 var Logger = require('../utilities/logger.utility.js');
 var useragent = require('useragent');
+var { config } = require('../configs');
 
 module.exports = function (err, req, res, next) {
 	if (!err || (!err.message && !(err instanceof Error))) {
@@ -45,8 +46,15 @@ module.exports = function (err, req, res, next) {
 		path: req.originalUrl,
 		method: req.method,
 		client,
-		stack: err.stack,
+		// stack: err.stack,
 	});
+
+	// log the response body in development mode
+	if (config.app.isDevelopment) {
+		Logger.error({
+			response: responseBody,
+		});
+	}
 
 	return res.status(statusCode).json(responseBody);
 };

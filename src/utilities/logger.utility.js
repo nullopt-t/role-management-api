@@ -2,11 +2,11 @@ var winston = require('winston');
 var path = require('path');
 var fs = require('fs');
 var typesUtility = require('./types.utility');
+var { config } = require('../configs');
 require('winston-daily-rotate-file');
 
 class Logger {
 	constructor(options = {}) {
-		this.env = process.env.NODE_ENV || 'development';
 		this.logDir = options.logDir || path.join(process.cwd(), 'logs');
 
 		// check the existing of the log folder

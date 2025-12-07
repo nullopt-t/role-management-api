@@ -1,174 +1,137 @@
 var RoleRepository = require('../../repositories/roles');
+var {
+	mapRoleToDTO,
+	mapPermissionToDTO,
+} = require('../../utilities/dto.utility');
 
 module.exports = {
+	// Read Operations
 	async getRoles() {
-		const roles = await RoleRepository.findAll();
-		return roles.map((role) => {
-			return {
-				id: role._id,
-				name: role.name,
-				description: role.description,
-				permissions: role.permissions.map((perm) => {
-					return {
-						action: perm.action,
-						resource: perm.resource,
-						description: perm.description,
-					};
-				}),
-			};
-		});
+		const roles = await RoleRepository.findAllRoles();
+		return roles.map(mapRoleToDTO);
 	},
+
+	async getRolesIncludingInactive() {
+		const roles = await RoleRepository.findAllRolesIncludingInactive();
+		return roles.map(mapRoleToDTO);
+	},
+
 	async getRoleByID(id) {
-		const role = await RoleRepository.findById(id);
-		return role
-			? {
-					id: role._id,
-					name: role.name,
-					description: role.descripton,
-					permissions: role.permissions.map((perm) => {
-						return {
-							action: perm.action,
-							resource: perm.resource,
-							description: perm.description,
-						};
-					}),
-			  }
-			: null;
+		const role = await RoleRepository.findRoleById(id);
+		return mapRoleToDTO(role);
 	},
+
 	async getRoleByName(name) {
 		const role = await RoleRepository.findByName(name);
-		return role
-			? {
-					id: role._id,
-					name: role.name,
-					description: role.descripton,
-					permissions: role.permissions.map((perm) => {
-						return {
-							action: perm.action,
-							resource: perm.resource,
-							description: perm.description,
-						};
-					}),
-			  }
-			: null;
+		return mapRoleToDTO(role);
 	},
-	async createRole(role) {
-		const createdRole = await RoleRepository.create(role);
-		return createdRole
-			? {
-					id: createdRole._id,
-					name: createdRole.name,
-					description: createdRole.descripton,
-					permissions: createdRole.permissions.map((perm) => {
-						return {
-							action: perm.action,
-							resource: perm.resource,
-							description: perm.description,
-						};
-					}),
-			  }
-			: null;
+
+	async getRoleByNameIncludingInactive(name) {
+		const role = await RoleRepository.findByNameIncludingInactive(name);
+		return mapRoleToDTO(role);
 	},
-	async addPermissions(id, permissions) {
-		const updatedRole = await RoleRepository.addPermissions(id, permissions);
-		return updatedRole
-			? {
-					id: updatedRole._id,
-					name: updatedRole.name,
-					description: updatedRole.descripton,
-					permissions: updatedRole.permissions.map((perm) => {
-						return {
-							action: perm.action,
-							resource: perm.resource,
-							description: perm.description,
-						};
-					}),
-			  }
-			: null;
+
+	// Create Operation
+	async createRole(roleData) {
+		if (!roleData.name || !roleData.description) {
+			throw new Error('Role name and description are required');
+		}
+		const createdRole = await RoleRepository.create(roleData);
+		return mapRoleToDTO(createdRole);
 	},
-	async removePermissions(id, permissions) {
-		const updatedRole = await RoleRepository.removePermissions(id, permissions);
-		return updatedRole
-			? {
-					id: updatedRole._id,
-					name: updatedRole.name,
-					description: updatedRole.descripton,
-					permissions: updatedRole.permissions.map((perm) => {
-						return {
-							action: perm.action,
-							resource: perm.resource,
-							description: perm.description,
-						};
-					}),
-			  }
-			: null;
+
+	// Update Operation
+	async updateRole(id, roleData) {
+		const updatedRole = await RoleRepository.updateRole(id, roleData);
+		return mapRoleToDTO(updatedRole);
 	},
-	async updateRole(id, role) {
-		const updatedRole = await RoleRepository.update(id, role);
-		return updatedRole
-			? {
-					id: updatedRole._id,
-					name: updatedRole.name,
-					description: updatedRole.descripton,
-					permissions: updatedRole.permissions.map((perm) => {
-						return {
-							action: perm.action,
-							resource: perm.resource,
-							description: perm.description,
-						};
-					}),
-			  }
-			: null;
-	},
+
+	// Delete Operations
 	async deleteRole(id) {
 		const deletedRole = await RoleRepository.delete(id);
-		return deletedRole
-			? {
-					id: deletedRole._id,
-					name: deletedRole.name,
-					description: deletedRole.descripton,
-					permissions: deletedRole.permissions.map((perm) => {
-						return {
-							action: perm.action,
-							resource: perm.resource,
-							description: perm.description,
-						};
-					}),
-			  }
-			: null;
+		return mapRoleToDTO(deletedRole);
 	},
-	async existsByID(id) {
-		const role = await RoleRepository.existsByID(id);
-		return role
-			? {
-					id: role._id,
-					name: role.name,
-					description: role.descripton,
-					permissions: role.permissions.map((perm) => {
-						return {
-							action: perm.action,
-							resource: perm.resource,
-							description: perm.description,
-						};
-					}),
-			  }
-			: null;
+
+	async softDeleteRole(id) {
+		const deletedRole = await RoleRepository.softDeleteRole(id);
+		return mapRoleToDTO(deletedRole);
 	},
+
+	async restoreRole(id) {
+		const restoredRole = await RoleRepository.restoreRole(id);
+		return mapRoleToDTO(restoredRole);
+	},
+
+	// Permission Management
+	async addPermissions(id, permissionIds) {
+		if (!Array.isArray(permissionIds) || permissionIds.length === 0) {
+			throw new Error('Invalid permissionIds provided');
+		}
+		const updatedRole = await RoleRepository.addPermissions(id, permissionIds);
+		return mapRoleToDTO(updatedRole);
+	},
+
+	async removePermissions(id, permissionIds) {
+		if (!Array.isArray(permissionIds) || permissionIds.length === 0) {
+			throw new Error('Invalid permissionIds provided');
+		}
+		const updatedRole = await RoleRepository.removePermissions(
+			id,
+			permissionIds
+		);
+		return mapRoleToDTO(updatedRole);
+	},
+
+	async setPermissions(id, permissionIds) {
+		if (!Array.isArray(permissionIds)) {
+			throw new Error('Invalid permissionIds provided');
+		}
+		const updatedRole = await RoleRepository.updateRole(id, {
+			permissions: permissionIds,
+		});
+		return mapRoleToDTO(updatedRole);
+	},
+
+	// Existence Checks
+	async existsById(id) {
+		return RoleRepository.existsById(id);
+	},
+
 	async existsByName(name) {
-		const role = await RoleRepository.existsByName(name);
-		return role
-			? {
-					id: role._id,
-					name: role.name,
-					description: role.descripton,
-					permissions: role.permissions.map((perm) => {
-						return {
-							action: perm.action,
-							resource: perm.resource,
-							description: perm.description,
-						};
-					}),
-			  }
-			: null;
+		return RoleRepository.existsByName(name);
+	},
+
+	// Statistics
+	async getStats() {
+		const total = await RoleRepository.count({});
+		const active = await RoleRepository.count({ isActive: true });
+		const inactive = await RoleRepository.count({ isActive: false });
+
+		return {
+			total,
+			active,
+			inactive,
+			activePercentage: total > 0 ? ((active / total) * 100).toFixed(2) : 0,
+		};
+	},
+
+	// Utility
+	async getPermissionsByRole(roleId) {
+		const role = await RoleRepository.findRoleById(roleId);
+		return (role.permissions || []).map(mapPermissionToDTO);
+	},
+
+	async hasPermission(roleId, permissionId) {
+		const role = await RoleRepository.findRoleById(roleId);
+		if (!role) return false;
+		return (role.permissions || []).some(
+			(perm) => perm._id.toString() === permissionId.toString()
+		);
+	},
+
+	// Role ID Resolution (for other services)
+	async getRoleIdByName(name) {
+		const role = await RoleRepository.getRoleIdByName(name);
+		return role;
 	},
 };

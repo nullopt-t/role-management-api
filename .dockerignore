@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log*
+logs
+.env
+.env.*
+.git
+coverage
+dist
+*.tgz
+Dockerfile
+docker-compose.yml
+*.log

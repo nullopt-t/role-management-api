@@ -1,4 +1,6 @@
 require('dotenv').config();
+require('./src/configs');
+
 var app = require('./app.js');
 var Logger = require('./src/utilities/logger.utility.js');
 

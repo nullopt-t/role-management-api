@@ -1,123 +1,234 @@
 var RoleService = require('../../services/role');
 var {
-	createRoleSchema,
-	getRoleByIDSchema,
-	roleIDSchema,
-	updateRoleByIDBodySchema,
-	addPermissionsSchema,
-	removePermissionsSchema,
-} = require('./validator');
+	sendSuccess,
+	sendError,
+	checkResourceExists,
+} = require('../../utilities/controller.utility');
+var {
+	idParamSchema,
+	includeInactiveQuerySchema,
+	roleCreateBodySchema,
+	roleUpdateBodySchema,
+	rolePermissionsBodySchema,
+	permissionIdArrayBodySchema,
+} = require('../../utilities/validation.utility');
 
 module.exports = {
+	// Get all roles
 	async getRoles(req, res, next) {
 		try {
-			const roles = await RoleService.getRoles();
-			res.json({
-				success: true,
-				data: roles,
-			});
-		} catch (error) {
-			next(error);
-		}
-	},
-	async getRoleByID(req, res, next) {
-		try {
-			const { id } = getRoleByIDSchema.parse(req.params);
+			const { includeInactive } = includeInactiveQuerySchema.parse(req.query);
 
-			const role = await RoleService.getRoleByID(id);
-			if (!role) {
-				return res.status(404).json({
-					success: false,
-					message: 'Not Found',
-				});
+			let roles;
+			if (includeInactive) {
+				roles = await RoleService.getRolesIncludingInactive();
+			} else {
+				roles = await RoleService.getRoles();
 			}
 
-			res.json({
-				success: true,
-				data: role,
-			});
+			return sendSuccess(res, roles);
 		} catch (error) {
 			next(error);
 		}
 	},
+
+	// Get single role
+	async getRoleByID(req, res, next) {
+		try {
+			const { id } = idParamSchema.parse(req.params);
+			const role = await RoleService.getRoleByID(id);
+
+			if (!checkResourceExists(role, res, 'Role')) return;
+
+			return sendSuccess(res, role);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	// Get role by name
+	async getRoleByName(req, res, next) {
+		try {
+			const { name } = req.params;
+
+			if (!name || typeof name !== 'string') {
+				return sendError(res, 'Role name is required', 400);
+			}
+
+			const role = await RoleService.getRoleByName(name);
+
+			if (!checkResourceExists(role, res, 'Role')) return;
+
+			return sendSuccess(res, role);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	// Get role statistics
+	async getRoleStats(req, res, next) {
+		try {
+			const stats = await RoleService.getStats();
+			return sendSuccess(res, stats);
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	// Create role
 	async createRole(req, res, next) {
 		try {
-			const { name, description, permissions } = createRoleSchema.parse(
+			const { name, description, permissions } = roleCreateBodySchema.parse(
 				req.body
 			);
+
+			// Check if role name already exists
+			const exists = await RoleService.existsByName(name);
+			if (exists) {
+				return sendError(res, 'Role name already in use', 409);
+			}
+
 			const role = await RoleService.createRole({
 				name,
 				description,
 				permissions,
 			});
-			res.json({
-				success: true,
-				data: role,
-			});
+
+			return sendSuccess(res, role, 201);
 		} catch (error) {
 			next(error);
 		}
 	},
+
+	// Update role
 	async updateRole(req, res, next) {
 		try {
-			const { id } = roleIDSchema.parse(req.params);
-			const newFields = updateRoleByIDBodySchema.parse(req.body);
+			const { id } = idParamSchema.parse(req.params);
+			const newFields = roleUpdateBodySchema.parse(req.body);
 
-			if (!(await RoleService.existsByID(id))) {
-				return res.status(404).json({
-					success: false,
-					message: 'Role not found',
-				});
+			// Check role exists
+			const exists = await RoleService.existsById(id);
+			if (!checkResourceExists(exists, res, 'Role')) return;
+
+			// Check name uniqueness if updating name
+			if (newFields.name) {
+				const nameExists = await RoleService.existsByName(newFields.name);
+				if (nameExists) {
+					return sendError(res, 'Role name already in use', 409);
+				}
 			}
+
 			const updatedRole = await RoleService.updateRole(id, newFields);
-			res.json({
-				success: true,
-				data: updatedRole,
-			});
+			return sendSuccess(res, updatedRole);
 		} catch (error) {
 			next(error);
 		}
 	},
+
+	// Soft delete role
+	async softDeleteRole(req, res, next) {
+		try {
+			const { id } = idParamSchema.parse(req.params);
+
+			const exists = await RoleService.existsById(id);
+			if (!checkResourceExists(exists, res, 'Role')) return;
+
+			const role = await RoleService.softDeleteRole(id);
+			return sendSuccess(res, { message: 'Role deleted', role });
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	// Restore role
+	async restoreRole(req, res, next) {
+		try {
+			const { id } = idParamSchema.parse(req.params);
+			const role = await RoleService.restoreRole(id);
+
+			if (!checkResourceExists(role, res, 'Role')) return;
+
+			return sendSuccess(res, { message: 'Role restored', role });
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	// Add permissions to role
 	async addRolePermissions(req, res, next) {
 		try {
-			const { id } = roleIDSchema.parse(req.params);
-			const permissions = addPermissionsSchema.parse(req.body);
+			const { id } = idParamSchema.parse(req.params);
+			const permissions = rolePermissionsBodySchema.parse(req.body);
 
-			if (!(await RoleService.existsByID(id))) {
-				return res.status(404).json({
-					success: false,
-					message: 'Role not found',
-				});
-			}
+			const exists = await RoleService.existsById(id);
+			if (!checkResourceExists(exists, res, 'Role')) return;
 
 			const updated = await RoleService.addPermissions(id, permissions);
+			return sendSuccess(res, { message: 'Permissions added', role: updated });
+		} catch (err) {
+			next(err);
+		}
+	},
 
-			res.json({
-				success: true,
-				data: updated,
+	// Remove permissions from role
+	async removeRolePermissions(req, res, next) {
+		try {
+			const { id } = idParamSchema.parse(req.params);
+			const permissions = rolePermissionsBodySchema.parse(req.body);
+
+			const exists = await RoleService.existsById(id);
+			if (!checkResourceExists(exists, res, 'Role')) return;
+
+			const updated = await RoleService.removePermissions(id, permissions);
+			return sendSuccess(res, {
+				message: 'Permissions removed',
+				role: updated,
 			});
 		} catch (err) {
 			next(err);
 		}
 	},
-	async removeRolePermissions(req, res, next) {
-		try {
-			const { id } = roleIDSchema.parse(req.params);
-			const permissions = removePermissionsSchema.parse(req.body);
 
-			if (!(await RoleService.existsByID(id))) {
-				return res.status(404).json({
-					success: false,
-					message: 'Role not found',
-				});
+	// Set permissions on role (replace all)
+	async setRolePermissions(req, res, next) {
+		try {
+			const { id } = idParamSchema.parse(req.params);
+			const { permissionIds } = permissionIdArrayBodySchema.parse(req.body);
+
+			const exists = await RoleService.existsById(id);
+			if (!checkResourceExists(exists, res, 'Role')) return;
+
+			const updated = await RoleService.setPermissions(id, permissionIds);
+			return sendSuccess(res, { message: 'Permissions set', role: updated });
+		} catch (err) {
+			next(err);
+		}
+	},
+
+	// Get permissions for role
+	async getRolePermissions(req, res, next) {
+		try {
+			const { id } = idParamSchema.parse(req.params);
+
+			const permissions = await RoleService.getPermissionsByRole(id);
+			return sendSuccess(res, permissions);
+		} catch (err) {
+			next(err);
+		}
+	},
+
+	// Check if role has permission
+	async hasRolePermission(req, res, next) {
+		try {
+			const { id } = idParamSchema.parse(req.params);
+			const { permissionId } = req.body;
+
+			if (!permissionId) {
+				return sendError(res, 'permissionId is required', 400);
 			}
 
-			const updated = await RoleService.removePermissions(id, permissions);
-
-			res.json({
-				success: true,
-				data: updated,
-			});
+			const hasPermission = await RoleService.hasPermission(id, permissionId);
+			return sendSuccess(res, { hasPermission });
 		} catch (err) {
 			next(err);
 		}
