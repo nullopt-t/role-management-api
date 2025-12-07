@@ -1,8 +1,8 @@
 var morgan = require('morgan');
 var express = require('express');
+var { setupSwagger, config } = require('./src/configs');
 var routes = require('./src/routes');
 var errorHandlerMiddleware = require('./src/middlewares/error-handler.middleware.js');
-var { setupSwagger, config } = require('./src/configs');
 
 const app = express();
 
